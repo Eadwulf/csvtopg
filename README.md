@@ -9,10 +9,6 @@ This package contains several functions for interacting with a PostgreSQL databa
 
 ## Functions
 
-### `get_pg_connection(**kwargs)`
-
-This function takes keyword arguments containing connection parameters for a PostgreSQL database and returns a database connection object.
-
 ### `get_df_from_csvfile(filepath: str) -> pd.DataFrame`
 
 This function reads a CSV file and returns a Pandas DataFrame.
@@ -24,6 +20,10 @@ This function takes a Pandas DataFrame as input and returns a dictionary with th
 ### `map_pandas_to_postgres(data_types: dict) -> dict`
 
 This function maps Pandas datatypes to suitable PostgreSQL datatypes.
+
+### `get_pg_connection(**kwargs)`
+
+This function takes keyword arguments containing connection parameters for a PostgreSQL database and returns a database connection object.
 
 ### `create_table(conn, table_name, field_dict, close_conn=True) -> bool`
 
