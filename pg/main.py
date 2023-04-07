@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.extras import execute_values
 
 
 def get_pg_connection(**kwargs):
@@ -15,7 +16,7 @@ def get_pg_connection(**kwargs):
     return conn
 
 
-def create_table(conn, table_name, field_dict, close_conn=True):
+def create_table(conn, table_name, field_dict, close_conn=True) -> bool:
     """
     Creates a new table with the specified name and fields using the provided database connection.
 
@@ -35,7 +36,7 @@ def create_table(conn, table_name, field_dict, close_conn=True):
     command += "id SERIAL PRIMARY KEY, "
 
     for field, datatype in field_dict.items():
-        command += f"{field} {datatype}, "
+        command += f"{field} {datatype} NULL, "
 
     # Remove the last comma and space from the command
     command = command[:-2]
@@ -56,3 +57,34 @@ def create_table(conn, table_name, field_dict, close_conn=True):
     cursor.close()
 
     return True
+
+
+def insert_to_postgresql(conn, table_name, dataframe) -> None:
+    """
+    Inserts all values in a Pandas DataFrame to a table in a PostgreSQL database.
+
+    Args:
+    - conn (psycopg2.extensions.connection): The connection to the database.
+    - table_name (str): The name of the table to insert the values into.
+    - dataframe (pandas.DataFrame): The DataFrame to be inserted.
+
+    Returns:
+    None
+
+    Raises:
+    Exception: If there is an error during insertion.
+    """
+    try:
+        # Prepare the query
+        query = f"INSERT INTO {table_name} ({', '.join(dataframe.columns)}) VALUES %s"
+        values = [tuple(x) for x in dataframe.to_numpy()]
+
+        # Execute the query
+        cur = conn.cursor()
+        execute_values(cur, query, values)
+        conn.commit()
+
+        # Close the cursor
+        cur.close()
+    except Exception as e:
+        raise Exception(f"Error inserting data into PostgreSQL: {str(e)}")
