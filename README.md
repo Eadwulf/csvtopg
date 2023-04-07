@@ -6,38 +6,148 @@ This package contains several functions for interacting with a PostgreSQL databa
 - Mapping Pandas datatypes to suitable PostgreSQL datatypes
 - Creating new tables on a PostgreSQL database
 - Inserting data from a Pandas DataFrame into a table in a PostgreSQL database
+<br> <br>
 
-## Functions
 
-### `csv_to_dataframe(filepath: str) -> pd.DataFrame`
+## Installation
 
-This function reads a CSV file and returns a Pandas DataFrame.
+Install The Required Dependencies
 
-### `get_dtatframe_column_dtypes_dict(dataframe: pd.DataFrame) -> dict`
+```console
+pip install pandas psycopg2
+```
 
-This function takes a Pandas DataFrame as input and returns a dictionary with the data types of each column.
+Install The `pandaspg` Package
 
-### `map_pandas_to_postgresql_datatypes(column_datatype_dict: dict) -> dict`
+```console
+pip install pandaspg
+```
 
-This function maps Pandas datatypes to suitable PostgreSQL datatypes.
+<aside> 💡 Make sure you have a PostgreSQL database up and running! </aside>
+<br>
 
-### `connect_to_postgresql(**connection_params)`
 
-This function takes keyword arguments containing connection parameters for a PostgreSQL database and returns a database connection object.
+## Usage
 
-### `create_postgresql_table(connection, table_name, field_dict) -> bool`
+I will walk you through a step-by-step example of how to migrate data from a `CSV` file into a `PostgreSQL` database. For demonstration purposes, download the `exoplanets_07-04-28.csv` file from my `[exoplanets](https://github.com/eadwulf/exoplanets)` repo.
 
-This function creates a new table with the specified name and fields using the provided database connection.
+<br>
 
-### `insert_dataframe_into_postgresql(connection, table_name, dataframe) -> None`
 
-This function inserts all values in a Pandas DataFrame into a table in a PostgreSQL database.
+### Download The CSV file
 
-## Dependencies
+```console
+wget https://raw.githubusercontent.com/Eadwulf/exoplanets/main/exoplanets_07-04-2023.csv
+```
 
-This package requires the following Python libraries:
+<aside> 💡 This file contains a total of 34,112 rows and 92 columns with a total size of 28.6 MB </aside>
+<br>
 
-- `pandas`
-- `psycopg2`
+### Import The Library
 
-It also assumes that a PostgreSQL database is available and that the necessary connection parameters are provided to the `connect_to_postgresql` function.
+```python
+import pandaspg
+```
+
+### Create a Pandas `dataframe` with the `CSV` file data
+
+```python
+dataframe = pandaspg.csv_to_dataframe('exoplanets_04-07-2023.csv')
+```
+
+### Generate a dictionary mapping the dataframe columns to their datatype
+
+```python
+column_datatypes_dict = pandaspg.get_dataframe_column_dtypes_dict(dataframe)
+```
+
+### Generate a dictionary mapping the dataframe columns to a suitable PostgreSQL datatype
+
+```python
+pg_column_datatypes_dict = pandaspg.map_pandas_to_postgresql_datatypes(
+            column_datatypes_dict)
+```
+
+### Connect to an existing and running PostgreSQL database
+
+```python
+connection = pandaspg.connect_to_postgresql(database='analysis',
+                                            user='postgres',
+                                            password='postgres',
+                                            host='localhost',
+                                            port=5432)
+```
+
+<aside> 💡 Replace the above parameters as you see fit. </aside>
+
+
+### Create a PostgreSQL table
+
+```python
+pandaspg.create_postgresql_table(
+            connection, 'exoplanets_csv', pg_column_datatypes_dict)
+```
+
+<aside> 💡 The parameter `exoplanets_csv` is the name of the database to be created. </aside>
+
+### Insert the from the dataframe to the recently created table
+
+```python
+pandaspg.insert_dataframe_into_postgresql(
+            connection, 'exoplanets_csv', dataframe)
+```
+
+### Close the connection with the database
+
+```python
+connection.close()
+```
+<br>
+
+## The Full Example
+
+```python
+import pandaspg
+
+dataframe = pandaspg.csv_to_dataframe('exoplanets_04-07-2023.csv')
+
+column_datatypes_dict = pandaspg.get_dataframe_column_dtypes_dict(dataframe)
+
+pg_column_datatypes_dict = pandaspg.map_pandas_to_postgresql_datatypes(
+            column_datatypes_dict)
+
+connection = pandaspg.connect_to_postgresql(database='analysis',
+                                            user='postgres',
+                                            password='postgres',
+                                            host='localhost',
+                                            port=5432)
+
+pandaspg.create_postgresql_table(
+            connection, 'exoplanets_csv', pg_column_datatypes_dict)
+
+pandaspg.insert_dataframe_into_postgresql(
+            connection, 'exoplanets_csv', dataframe)
+
+connection.close()
+```
+<br>
+
+## Inspect The Results
+
+### Enter the PostgreSQL prompt
+
+```cosnole
+psql -U postgres -d analysis
+```
+
+### List the tables in the `analysis` database
+
+```sql
+\dt
+```
+
+### Retrieve the data from the `exoplanets_csv` table
+
+```sql
+SELECT * FROM exoplanets_csv;
+```
