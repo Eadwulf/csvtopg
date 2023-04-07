@@ -9,27 +9,27 @@ This package contains several functions for interacting with a PostgreSQL databa
 
 ## Functions
 
-### `get_df_from_csvfile(filepath: str) -> pd.DataFrame`
+### `csv_to_dataframe(filepath: str) -> pd.DataFrame`
 
 This function reads a CSV file and returns a Pandas DataFrame.
 
-### `get_df_dtypes(df: pd.DataFrame) -> dict`
+### `get_dtatframe_column_dtypes_dict(dataframe: pd.DataFrame) -> dict`
 
 This function takes a Pandas DataFrame as input and returns a dictionary with the data types of each column.
 
-### `map_pandas_to_postgres(data_types: dict) -> dict`
+### `map_pandas_to_postgresql_datatypes(column_datatype_dict: dict) -> dict`
 
 This function maps Pandas datatypes to suitable PostgreSQL datatypes.
 
-### `get_pg_connection(**kwargs)`
+### `connect_to_postgresql(**connection_params)`
 
 This function takes keyword arguments containing connection parameters for a PostgreSQL database and returns a database connection object.
 
-### `create_table(conn, table_name, field_dict, close_conn=True) -> bool`
+### `create_postgresql_table(connection, table_name, field_dict) -> bool`
 
 This function creates a new table with the specified name and fields using the provided database connection.
 
-### `insert_df_into_postgresql(conn, table_name, dataframe) -> None`
+### `insert_dataframe_into_postgresql(connection, table_name, dataframe) -> None`
 
 This function inserts all values in a Pandas DataFrame into a table in a PostgreSQL database.
 
@@ -40,4 +40,4 @@ This package requires the following Python libraries:
 - `pandas`
 - `psycopg2`
 
-It also assumes that a PostgreSQL database is available and that the necessary connection parameters are provided to the `get_pg_connection` function.
+It also assumes that a PostgreSQL database is available and that the necessary connection parameters are provided to the `connect_to_postgresql` function.

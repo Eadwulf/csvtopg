@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2.extras import execute_values
 
 
-def get_df_from_csvfile(filepath: str) -> pd.DataFrame:
+def csv_to_dataframe(filepath: str) -> pd.DataFrame:
     """
     Reads a CSV file and returns a Pandas DataFrame.
 
@@ -18,13 +18,13 @@ def get_df_from_csvfile(filepath: str) -> pd.DataFrame:
     return df
 
 
-def get_df_dtypes(df: pd.DataFrame) -> dict:
+def get_dataframe_column_dtypes_dict(dataframe: pd.DataFrame) -> dict:
     """
     This function takes a pandas DataFrame as input and returns a dictionary with the data types of each column.
 
     Parameters:
     ----------
-    df : pandas DataFrame
+    dataframe : pandas DataFrame
         The DataFrame to analyze
 
     Returns:
@@ -32,16 +32,16 @@ def get_df_dtypes(df: pd.DataFrame) -> dict:
     dict
         A dictionary where the keys are column names and the values are the data types of the corresponding columns.
     """
-    dtypes = df.dtypes
+    dtypes = dataframe.dtypes
     return dict(dtypes)
 
 
-def map_pandas_to_postgres(data_types: dict) -> dict:
+def map_pandas_to_postgresql_datatypes(column_datatypes_dict: dict) -> dict:
     """
     Maps Pandas datatype to suitable PostgreSQL datatype.
 
     Args:
-        data_types (dict): A dictionary containing pandas dataframe column names as its keys
+        column_datatype_dict (dict): A dictionary containing pandas dataframe column names as its keys
             and their datatype as its values.
 
     Returns:
@@ -69,29 +69,29 @@ def map_pandas_to_postgres(data_types: dict) -> dict:
         'datetime64[ns]': 'TIMESTAMP',
         'timedelta[ns]': 'INTERVAL',
     }
-    return {data_type: mapping[str(dtype)] for data_type, dtype in data_types.items()}
+    return {data_type: mapping[str(dtype)] for data_type, dtype in column_datatypes_dict.items()}
 
 
-def get_pg_connection(**kwargs):
+def connect_to_postgresql(**connection_params):
     """
     Connects to a PostgreSQL database using the provided keyword arguments and returns a database connection object.
 
     Args:
-    - **kwargs: keyword arguments containing the connection parameters, such as host, port, database, user, and password
+    - **connection_params: keyword arguments containing the connection parameters, such as host, port, database, user, and password
 
     Returns:
     A psycopg2.extensions.connection object representing the database connection
     """
-    conn = psycopg2.connect(**kwargs)
+    conn = psycopg2.connect(**connection_params)
     return conn
 
 
-def create_table(conn, table_name, field_dict, close_conn=True) -> bool:
+def create_postgresql_table(connection, table_name, field_dict) -> bool:
     """
     Creates a new table with the specified name and fields using the provided database connection.
 
     Args:
-    - conn (psycopg2.extensions.connection): a database connection object
+    - connection (psycopg2.extensions.connection): a database connection object
     - table_name (str): the name of the table to be created
     - field_dict (dict): a dictionary containing the names of the fields and their corresponding data types
 
@@ -99,7 +99,7 @@ def create_table(conn, table_name, field_dict, close_conn=True) -> bool:
     True if a table was created successfully, False otherwise
     """
 
-    cursor = conn.cursor()
+    cursor = connection.cursor()
 
     # Generate the SQL command to create the table
     command = f"CREATE TABLE {table_name} ("
@@ -121,20 +121,18 @@ def create_table(conn, table_name, field_dict, close_conn=True) -> bool:
         return False
 
     # Commit the changes and close the connection
-    conn.commit()
-    if close_conn:
-        conn.close()
+    connection.commit()
     cursor.close()
 
     return True
 
 
-def insert_df_into_postgresql(conn, table_name, dataframe) -> None:
+def insert_dataframe_into_postgresql(connection, table_name, dataframe) -> None:
     """
     Inserts all values in a Pandas DataFrame to a table in a PostgreSQL database.
 
     Args:
-    - conn (psycopg2.extensions.connection): The connection to the database.
+    - connection (psycopg2.extensions.connection): The connection to the database.
     - table_name (str): The name of the table to insert the values into.
     - dataframe (pandas.DataFrame): The DataFrame to be inserted.
 
@@ -150,11 +148,11 @@ def insert_df_into_postgresql(conn, table_name, dataframe) -> None:
         values = [tuple(x) for x in dataframe.to_numpy()]
 
         # Execute the query
-        cur = conn.cursor()
-        execute_values(cur, query, values)
-        conn.commit()
+        cursor = connection.cursor()
+        execute_values(cursor, query, values)
+        connection.commit()
 
         # Close the cursor
-        cur.close()
+        cursor.close()
     except Exception as e:
         raise Exception(f"Error inserting data into PostgreSQL: {str(e)}")
