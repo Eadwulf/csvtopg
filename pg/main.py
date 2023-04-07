@@ -59,7 +59,7 @@ def create_table(conn, table_name, field_dict, close_conn=True) -> bool:
     return True
 
 
-def insert_to_postgresql(conn, table_name, dataframe) -> None:
+def insert_df_into_postgresql(conn, table_name, dataframe) -> None:
     """
     Inserts all values in a Pandas DataFrame to a table in a PostgreSQL database.
 
