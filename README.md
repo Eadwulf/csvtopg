@@ -1,6 +1,6 @@
 ## Description
 
-This library contains several fucntions that allows you to migrated from a CSV file of Pandas Dataframe into a PostgreSQL database using the libraries Psycopg2 and Pandas. Specifically, it includes functions for:
+This library contains several functions that allow you to migrate data from a CSV file or Pandas Dataframe into a PostgreSQL database using the libraries Psycopg2 and Pandas. Specifically, it includes functions for:
 
 - Loading data from a CSV file to a Pandas dataframe
 - Mapping Pandas Dataframe columns to their datatypes
