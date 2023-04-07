@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pandaspg"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Adolfo Jimenez", email="adolfoj@protonmail.com" },
 ]
-description = "A package that contains several functions for interacting with a PostgreSQL database using Python and the Pandas library"
+description = "This library contains several fucntions that allows you to migrated from a CSV file of Pandas Dataframe into a PostgreSQL database using the libraries Psycopg2 and Pandas"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
