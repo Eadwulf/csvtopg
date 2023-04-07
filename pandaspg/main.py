@@ -30,7 +30,7 @@ def get_dataframe_column_dtypes_dict(dataframe: pd.DataFrame) -> dict:
     Returns:
     -------
     dict
-        A dictionary where the keys are column names and the values are the data types of the corresponding columns.
+        A dictionary where the keys are the column names and the values are the data types of the corresponding columns.
     """
     dtypes = dataframe.dtypes
     return dict(dtypes)
