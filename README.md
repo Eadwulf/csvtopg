@@ -1,9 +1,11 @@
 ## Description
 
-This package contains several functions for interacting with a PostgreSQL database using Python and the Pandas library. Specifically, it includes functions for:
+This library contains several fucntions that allows you to migrated from a CSV file of Pandas Dataframe into a PostgreSQL database using the libraries Psycopg2 and Pandas. Specifically, it includes functions for:
 
 - Loading data from a CSV file to a Pandas dataframe
-- Mapping Pandas datatypes to suitable PostgreSQL datatypes
+- Mapping Pandas Dataframe columns to their datatypes
+- Mapping Pandas Dataframe columns to suitable PostgreSQL datatypes
+- Connect to a PostgreSQL database
 - Creating new tables on a PostgreSQL database
 - Inserting data from a Pandas DataFrame into a table in a PostgreSQL database
 <br> <br>
