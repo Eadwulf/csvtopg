@@ -103,7 +103,10 @@ def create_postgresql_table(connection, table_name, field_dict) -> bool:
 
     # Generate the SQL command to create the table
     command = f"CREATE TABLE {table_name} ("
-    command += "id SERIAL PRIMARY KEY, "
+
+    # Define the primary key field if needed
+    if field_dict.get('id') is None:
+        command += "id SERIAL PRIMARY KEY, "
 
     for field, datatype in field_dict.items():
         command += f"{field} {datatype} NULL, "
