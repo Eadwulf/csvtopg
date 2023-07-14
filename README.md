@@ -68,17 +68,20 @@ column_datatypes_dict = pandaspg.get_dataframe_column_dtypes_dict(dataframe)
 
 ```python
 pg_column_datatypes_dict = pandaspg.map_pandas_to_postgresql_datatypes(
-            column_datatypes_dict)
+    column_datatypes_dict
+)
 ```
 
 ### Connect to an existing and running PostgreSQL database
 
 ```python
-connection = pandaspg.connect_to_postgresql(database='analysis',
-                                            user='postgres',
-                                            password='postgres',
-                                            host='localhost',
-                                            port=5432)
+connection = pandaspg.connect_to_postgresql(
+    database='analysis',
+    user='postgres',
+    password='postgres',
+    host='localhost',
+    port=5432,
+)
 ```
 
 <aside> 💡 Replace the above parameters as you see fit. </aside>
@@ -88,16 +91,18 @@ connection = pandaspg.connect_to_postgresql(database='analysis',
 
 ```python
 pandaspg.create_postgresql_table(
-            connection, 'exoplanets_csv', pg_column_datatypes_dict)
+    connection, 'exoplanets_csv', pg_column_datatypes_dict
+)
 ```
 
 <aside> 💡 The parameter `exoplanets_csv` is the name of the database to be created. </aside>
 
-### Insert the from the dataframe to the recently created table
+### Insert the data from the dataframe into the recently created table
 
 ```python
 pandaspg.insert_dataframe_into_postgresql(
-            connection, 'exoplanets_csv', dataframe)
+    connection, 'exoplanets_csv', dataframe
+)
 ```
 
 ### Close the connection with the database
@@ -117,19 +122,24 @@ dataframe = pandaspg.csv_to_dataframe('exoplanets_04-07-2023.csv')
 column_datatypes_dict = pandaspg.get_dataframe_column_dtypes_dict(dataframe)
 
 pg_column_datatypes_dict = pandaspg.map_pandas_to_postgresql_datatypes(
-            column_datatypes_dict)
+    column_datatypes_dict
+)
 
-connection = pandaspg.connect_to_postgresql(database='analysis',
-                                            user='postgres',
-                                            password='postgres',
-                                            host='localhost',
-                                            port=5432)
+connection = pandaspg.connect_to_postgresql(
+    database='analysis',
+    user='postgres',
+    password='postgres',
+    host='localhost',
+    port=5432,
+)
 
 pandaspg.create_postgresql_table(
-            connection, 'exoplanets_csv', pg_column_datatypes_dict)
+    connection, 'exoplanets_csv', pg_column_datatypes_dict
+)
 
 pandaspg.insert_dataframe_into_postgresql(
-            connection, 'exoplanets_csv', dataframe)
+    connection, 'exoplanets_csv', dataframe
+)
 
 connection.close()
 ```
