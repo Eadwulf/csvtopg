@@ -31,7 +31,8 @@ pip install pandaspg
 
 ## Usage
 
-I will walk you through a step-by-step example of how to migrate data from a `CSV` file into a `PostgreSQL` database. For demonstration purposes, download the `exoplanets_07-04-28.csv` file from my `[exoplanets](https://github.com/eadwulf/exoplanets)` repo.
+I will walk you through a step-by-step example of how to migrate data from a `CSV` file into a `PostgreSQL` database.
+For demonstration purposes, download the [exoplanets](./exoplanets_07-04-2023.csv) file located in this repo.
 
 <br>
 
@@ -39,7 +40,7 @@ I will walk you through a step-by-step example of how to migrate data from a `CS
 ### Download The CSV file
 
 ```console
-wget https://raw.githubusercontent.com/Eadwulf/exoplanets/main/exoplanets_07-04-2023.csv
+wget https://raw.githubusercontent.com/adolfojmnz/pandaspg/main/exoplanets_07-04-2023.csv
 ```
 
 <aside> 💡 This file contains a total of 34,112 rows and 92 columns with a total size of 28.6 MB </aside>
